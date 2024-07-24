@@ -7,7 +7,10 @@ type Prover struct {
 	kyber.Group
 }
 
-func (p Prover) RecursiveProve(g_vec []kyber.Point, h kyber.Point, a_vec, b_vec []kyber.Scalar, u, P kyber.Point, n int) {
+// RecursiveProve
+//
+// u is the challenge value received from Verifier
+func (p Prover) RecursiveProve(g_vec []kyber.Point, h, P kyber.Point, a_vec, b_vec []kyber.Scalar, u kyber.Scalar, n int) {
 	aLen := len(a_vec)
 	gLen := len(g_vec)
 	if aLen != len(b_vec) {
@@ -18,10 +21,10 @@ func (p Prover) RecursiveProve(g_vec []kyber.Point, h kyber.Point, a_vec, b_vec 
 	}
 	var proofStep []kyber.Scalar
 	if n%2 == 1 {
-		na := p.Group.Scalar().Neg(a_vec[aLen-1])
-		nb := p.Group.Scalar().Neg(b_vec[aLen-1])
-		tmp1 := p.Group.Point().Mul(na, g_vec[gLen-1])
-		tmp2 := p.Group.Point().Mul(h_vec[hLen-1] * *(nb) * u * *(-na * nb)
+		aNeg := p.Group.Scalar().Neg(a_vec[aLen-1])
+		bNeg := p.Group.Scalar().Neg(b_vec[aLen-1])
+		tmp1 := p.Group.Point().Mul(aNeg, g_vec[gLen-1])
+		tmp2 := p.Group.Point().Mul(bNeg, h)
 		proofStep = append(proofStep, na, nb)
 	}
 	n1 := n / 2
