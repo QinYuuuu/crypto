@@ -16,17 +16,23 @@ func (p Prover) RecursiveProve(g_vec []kyber.Point, h, P kyber.Point, a_vec, b_v
 	if aLen != len(b_vec) {
 		return
 	}
+	// step 1
 	if n == 1 {
 		return
 	}
 	var proofStep []kyber.Scalar
+
+	// step 2
 	if n%2 == 1 {
 		aNeg := p.Group.Scalar().Neg(a_vec[aLen-1])
 		bNeg := p.Group.Scalar().Neg(b_vec[aLen-1])
 		tmp1 := p.Group.Point().Mul(aNeg, g_vec[gLen-1])
 		tmp2 := p.Group.Point().Mul(bNeg, h)
 		proofStep = append(proofStep, na, nb)
+		n = n - 1
 	}
+
+	// step 3
 	n1 := n / 2
 	cl := p.Group.Scalar().Zero()
 	cr := p.Group.Scalar().Zero()
@@ -36,6 +42,9 @@ func (p Prover) RecursiveProve(g_vec []kyber.Point, h, P kyber.Point, a_vec, b_v
 		cl = p.Group.Scalar().Add(cl, tmp1)
 		tmp2 := p.Group.Scalar().Mul(a_vec[n1:][i], b_vec[:n1][i])
 		cr = p.Group.Scalar().Add(cr, tmp2)
+		L *= g_vec[n1:][i] * *a_vec[:n1][i] * h[:n1][i] * *b_vec[n1:][i]
+		R *= g_vec[:n1][i] * *a_vec[n1:][i] * h[n1:][i] * *b_vec[:n1][i]
+
 	}
 	L = p.Group.Point().Mul(cl, u)
 	R = p.Group.Point().Mul(cr, u)
