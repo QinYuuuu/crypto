@@ -8,8 +8,6 @@ type Prover struct {
 }
 
 // RecursiveProve
-//
-// u is the challenge value received from Verifier
 func (p Prover) RecursiveProve(g_vec []kyber.Point, h, P kyber.Point, a_vec, b_vec []kyber.Scalar, u kyber.Scalar, n int) {
 	aLen := len(a_vec)
 	gLen := len(g_vec)
@@ -42,12 +40,24 @@ func (p Prover) RecursiveProve(g_vec []kyber.Point, h, P kyber.Point, a_vec, b_v
 		cl = p.Group.Scalar().Add(cl, tmp1)
 		tmp2 := p.Group.Scalar().Mul(a_vec[n1:][i], b_vec[:n1][i])
 		cr = p.Group.Scalar().Add(cr, tmp2)
-		L *= g_vec[n1:][i] * *a_vec[:n1][i] * h[:n1][i] * *b_vec[n1:][i]
-		R *= g_vec[:n1][i] * *a_vec[n1:][i] * h[n1:][i] * *b_vec[:n1][i]
+		L = p.Group.Point().Mul(a_vec[:n1][i], g_vec[n1:][i])
+		R = p.Group.Point().Mul(a_vec[n1:][i], g_vec[:n1][i])
 
 	}
-	L = p.Group.Point().Mul(cl, u)
-	R = p.Group.Point().Mul(cr, u)
+	L = p.Group.Point().Add(p.Group.Point().Mul(cl, h), L)
+	R = p.Group.Point().Add(p.Group.Point().Mul(cr, h), R)
 	//p.RecursiveProve(n1)
+
+	// z is the challenge value
+	var z kyber.Scalar
+	z_inv := p.Group.Scalar().Inv(z)
+	// step 5
+	g_vec1 := make([]kyber.Point, n1)
+	a_vec1 := make([]kyber.Scalar, n1)
+	for i := 0; i < n1; i++ {
+		g_vec1[i] = p.Group.Point().Add(g_vec[:n1][i]) * g_vec[n_p:][i] * *x
+	}
+
+	// step 6
 	return
 }
