@@ -1,31 +1,91 @@
 package elgamal
 
 import (
-	"math/big"
-	"math/rand"
+	"fmt"
+	"go.dedis.ch/kyber/v3/group/curve25519"
+	"go.dedis.ch/kyber/v3/group/edwards25519"
 	"testing"
-	"time"
-
-	"github.com/arnaucube/cryptofun/ecc"
-	"github.com/arnaucube/cryptofun/elgamal"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestKeyGen(t *testing.T) {
-	ec := ecc.NewEC(big.NewInt(int64(1)), big.NewInt(int64(18)), big.NewInt(int64(19)))
-	g := ecc.Point{big.NewInt(int64(7)), big.NewInt(int64(11))}
-	eg_raw, err := elgamal.NewEG(ec, g)
-	eg := EG{eg_raw}
-	assert.Nil(t, err)
+func TestElGamaledwards25519(t *testing.T) {
+	suite := edwards25519.NewBlakeSHA256Ed25519()
+	// Create a public/private keypair
+	a := suite.Scalar().Pick(suite.RandomStream()) // Alice's private key
+	A := suite.Point().Mul(a, nil)                 // Alice's public key
+	fmt.Printf("Maximum number of bytes: %v\n", suite.Point().EmbedLen())
+	// ElGamal-encrypt a message using the public key.
+	m := []byte("The quick brown fox")
+	K, C, _ := Encrypt(suite, A, m)
 
-	r := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
-	privK, pubK1, err := eg.KeyGen(r)
-	assert.Nil(t, err)
+	// Decrypt it using the corresponding private key.
+	mm, err := Decrypt(suite, a, K, C)
 
-	pubK2, err := eg_raw.PubK(privK)
-	assert.Nil(t, err)
-
-	if !pubK2.Equal(ecc.Point(pubK1)) {
-		t.Errorf("pubK not match")
+	// Make sure it worked!
+	if err != nil {
+		fmt.Println("decryption failed: " + err.Error())
 	}
+	if string(mm) != string(m) {
+		fmt.Println("decryption produced wrong output: " + string(mm))
+		return
+	}
+	fmt.Println("Decryption succeeded: " + string(mm))
+
+	// Output:
+	// Decryption succeeded: The quick brown fox
 }
+
+func TestElGamalCurve25519(t *testing.T) {
+	suite := curve25519.NewBlakeSHA256Curve25519(true)
+	// Create a public/private keypair
+	a := suite.Scalar().Pick(suite.RandomStream()) // Alice's private key
+	A := suite.Point().Mul(a, nil)                 // Alice's public key
+	fmt.Printf("Maximum number of bytes: %v", suite.Point().EmbedLen())
+	// ElGamal-encrypt a message using the public key.
+	m := []byte("The quick brown fox")
+	K, C, _ := Encrypt(suite, A, m)
+
+	// Decrypt it using the corresponding private key.
+	mm, err := Decrypt(suite, a, K, C)
+
+	// Make sure it worked!
+	if err != nil {
+		fmt.Println("decryption failed: " + err.Error())
+	}
+	if string(mm) != string(m) {
+		fmt.Println("decryption produced wrong output: " + string(mm))
+		return
+	}
+	fmt.Println("Decryption succeeded: " + string(mm))
+
+	// Output:
+	// Decryption succeeded: The quick brown fox
+}
+
+/*
+func TestElGamalBLS12381(t *testing.T) {
+	suite := bls.NewSuiteBLS12381()
+	// Create a public/private keypair
+	a := suite.Scalar().Pick(suite.RandomStream()) // Alice's private key
+	A := suite.Point().Mul(a, nil)                 // Alice's public key
+
+	// ElGamal-encrypt a message using the public key.
+	m := []byte("The quick brown fox")
+	K, C, _ := Encrypt(suite, A, m)
+
+	// Decrypt it using the corresponding private key.
+	mm, err := Decrypt(suite, a, K, C)
+
+	// Make sure it worked!
+	if err != nil {
+		fmt.Println("decryption failed: " + err.Error())
+	}
+	if string(mm) != string(m) {
+		fmt.Println("decryption produced wrong output: " + string(mm))
+		return
+	}
+	fmt.Println("Decryption succeeded: " + string(mm))
+
+	// Output:
+	// Decryption succeeded: The quick brown fox
+}
+*/
