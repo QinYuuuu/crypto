@@ -1,4 +1,4 @@
-// Hasher is a package that provides different kind of hash functions
+// Package hasher is a package that provides different kind of hash functions
 // like SHA256, SHA512, MD5, Keccak256, Poseidon and MIMC7.
 package hasher
 
