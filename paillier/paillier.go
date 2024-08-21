@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"runtime"
 
-	"github.com/QinYuuuu/abvss/crypto/utils"
+	"github.com/QinYuuuu/crypto/utils"
 )
 
 // clone from github.com/okx/threshold-lib/crypto

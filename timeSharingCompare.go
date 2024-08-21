@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/rand"
-	"fmt"
 	"math/big"
 	"time"
 )
@@ -64,6 +63,7 @@ func MeasureTime(simulateFunc func(B, n int, p, g, pElgamal, gElgamal *big.Int),
 	return time.Since(startTime)
 }
 
+/*
 func main() {
 	bitsElgamal := 1024
 	pElgamal, gElgamal := GenerateLargePrimeAndRoot(bitsElgamal)
@@ -87,3 +87,4 @@ func main() {
 		test2NTimes = append(test2NTimes, MeasureTime(SimulateTest2, 5, n, p, g, pElgamal, gElgamal))
 	}
 }
+*/
