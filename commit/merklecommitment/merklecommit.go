@@ -1,7 +1,6 @@
 package merklecommitment
 
 import (
-	//"tmaabe/hasher"
 	"bytes"
 	"errors"
 )

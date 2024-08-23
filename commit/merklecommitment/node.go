@@ -9,7 +9,7 @@ type Node struct {
 	Left   *Node  // Left child of the node
 	Right  *Node  // Right chiild of the node
 	Parent *Node  // Parent of the node
-	leaf   bool	  // if a leaf node
+	leaf   bool   // if a leaf node
 	dup    bool   // if is duplicate leaf node
 }
 

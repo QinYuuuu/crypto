@@ -1,13 +1,10 @@
-package merklecommitment_test
+package merklecommitment
 
 import (
 	"fmt"
+	"github.com/QinYuuuu/SS23/crypto/hasher"
 	"reflect"
 	"testing"
-
-	. "github.com/QinYuuuu/crypto/commit/merklecommitment"
-
-	"github.com/QinYuuuu/crypto/hasher"
 )
 
 func TestNewMerkleTree(t *testing.T) {

@@ -6,12 +6,12 @@ import (
 
 // MerkleTree struct is used to represent a merkle tree and the hash function required for computation.
 type MerkleTree struct {
-	root   *Node               // Root of the merkle tree
-	leafs []*Node
+	root   *Node // Root of the merkle tree
+	leafs  []*Node
 	hasher func([]byte) []byte // hash function used for generating the tree
 }
 
-//NewTree creates a new Merkle Tree using the content cs.
+// NewMerkleTree NewTree creates a new Merkle Tree using the content cs.
 func NewMerkleTree(cs [][]byte, hasher func([]byte) []byte) (*MerkleTree, error) {
 	t := &MerkleTree{
 		hasher: hasher,
@@ -25,9 +25,9 @@ func NewMerkleTree(cs [][]byte, hasher func([]byte) []byte) (*MerkleTree, error)
 	return t, nil
 }
 
-//buildWithContent is a helper function that for a given set of Contents, generates a
-//corresponding tree and returns the root node, a list of leaf nodes, and a possible error.
-//Returns an error if cs contains no Contents.
+// buildWithContent is a helper function that for a given set of Contents, generates a
+// corresponding tree and returns the root node, a list of leaf nodes, and a possible error.
+// Returns an error if cs contains no Contents.
 func buildWithContent(cs [][]byte, hasher func([]byte) []byte) (*Node, []*Node, error) {
 	if len(cs) == 0 {
 		return nil, nil, errors.New("error: cannot construct tree with no content")
@@ -39,7 +39,7 @@ func buildWithContent(cs [][]byte, hasher func([]byte) []byte) (*Node, []*Node, 
 			hash: hash,
 			data: c,
 			leaf: true,
-			dup: false,
+			dup:  false,
 		})
 	}
 	if len(leafs)%2 == 1 {
@@ -58,8 +58,8 @@ func buildWithContent(cs [][]byte, hasher func([]byte) []byte) (*Node, []*Node, 
 	return root, leafs, nil
 }
 
-//buildIntermediate is a helper function that for a given list of leaf nodes, constructs
-//the intermediate and root levels of the tree. Returns the resulting root node of the tree.
+// buildIntermediate is a helper function that for a given list of leaf nodes, constructs
+// the intermediate and root levels of the tree. Returns the resulting root node of the tree.
 func buildIntermediate(nl []*Node, hasher func([]byte) []byte) (*Node, error) {
 	var nodes []*Node
 	for i := 0; i < len(nl); i += 2 {
@@ -70,12 +70,12 @@ func buildIntermediate(nl []*Node, hasher func([]byte) []byte) (*Node, error) {
 		pdata := append(nl[left].hash, nl[right].hash...)
 		phash := hasher(pdata)
 		p := &Node{
-			Left:  nl[left],
-			Right: nl[right],
+			Left:   nl[left],
+			Right:  nl[right],
 			Parent: nil,
-			hash:  phash,
-			data: pdata,
-			leaf: false,
+			hash:   phash,
+			data:   pdata,
+			leaf:   false,
 		}
 		nodes = append(nodes, p)
 		nl[left].Parent = p
