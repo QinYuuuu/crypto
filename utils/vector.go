@@ -1,8 +1,7 @@
-package vector
+package utils
 
 import (
 	"errors"
-	"github.com/QinYuuuu/crypto/utils"
 	"math/big"
 )
 
@@ -18,7 +17,7 @@ func DotProduct(v1, v2 []*big.Int) (*big.Int, error) {
 	if len(v1) != len(v2) {
 		return nil, errors.New("the input length is different")
 	}
-	dot := utils.ONE
+	dot := ONE
 	for i := 0; i < len(v1); i++ {
 		dot = new(big.Int).Add(dot, new(big.Int).Mul(v1[i], v2[i]))
 	}
@@ -29,7 +28,7 @@ func VecPow(v1, v2 []*big.Int, m *big.Int) (*big.Int, error) {
 	if len(v1) != len(v2) {
 		return nil, errors.New("the input length is different")
 	}
-	dot := utils.ONE
+	dot := ONE
 	for i := 0; i < len(v1); i++ {
 		dot = new(big.Int).Mul(dot, new(big.Int).Exp(v1[i], v2[i], m))
 	}

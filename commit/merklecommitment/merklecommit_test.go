@@ -2,7 +2,7 @@ package merklecommitment
 
 import (
 	"fmt"
-	"github.com/QinYuuuu/SS23/crypto/hasher"
+	"github.com/QinYuuuu/crypto/hasher"
 	"reflect"
 	"testing"
 )
