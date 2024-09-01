@@ -1,6 +1,9 @@
 package iipa
 
-import "go.dedis.ch/kyber/v3"
+import (
+	"go.dedis.ch/kyber/v3"
+	"go.dedis.ch/kyber/v3/util/random"
+)
 
 type Verifier struct {
 	crs    *CRS
@@ -59,7 +62,7 @@ func (v *Verifier) RecursiveVerify(gVec []kyber.Point, h, P kyber.Point, n int) 
 
 	// step 4
 	// generate challenge value
-	z := v.Scalar()
+	z := v.Scalar().Pick(random.New())
 	zInv := v.Scalar().Inv(z)
 
 	// step 5
